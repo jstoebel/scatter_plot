@@ -62,25 +62,28 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
           // color circle depending if point has doping allegation
 
           .on('mouseover', function(point) {
-            var ttStr = `<div> \
-              <div>${point.Name}(${point.Nationality})</div> \
-              <div>Year: ${point.Year}, Time: ${point.Time}</div>\
-              <div> ${point.Doping}</div> \
-              <div> <a href='${point.URL}'>source</a></div>\
-            </div>`
 
-            tooltip.style('opacity', .9)
+              var lineOne = `<div>${point.Name}(${point.Nationality}). Year: ${point.Year}, Time: ${point.Time}</div>`;
+              var lineTwo = point.Doping ? `<div> ${point.Doping} <a href='${point.URL}'>source</a></div>` : ""
+              var ttStr = "<div>" + lineOne + lineTwo + "</div>"
 
-            tooltip.html(ttStr)
+              tooltip.style('opacity', 0.9)
 
-            tempColor = this.style.fill;
-            d3.select(this)
-                .style('opacity', .5)
-        })
+              tooltip.html(ttStr)
+                  // .style('left', (d3.event.pageX - 35) + 'px')
+                  // .style('top',  (d3.event.pageY - 30) + 'px')
+
+              tempColor = this.style.fill;
+              d3.select(this)
+                  .style('opacity', .5)
+          })
 
         .on('mouseout', function(point) {
             d3.select(this)
                 .style('opacity', 1)
+
+            // tooltip.style('opacity', 0)
+
         })
 
 
@@ -113,7 +116,7 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
 
   var hGuide = d3.select('svg').append('g')
       hAxis(hGuide)
-      hGuide.attr('transform', 'translate(' + margin.left + ', ' + (height + margin.top) + ')')
+      hGuide.attr('transform', 'translate(' + (margin.left) + ', ' + (height + margin.top) + ')')
       hGuide.selectAll('path')
           .style({ fill: 'none', stroke: "#000"})
       hGuide.selectAll('line')
@@ -150,5 +153,23 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
 
   var tooltip = d3.select('body').append('div')
     .classed('tooltip',  true)
+
+  console.log(d3.legend !== undefined)
+
+  // var redCircle = d3.select('svg')
+  //     .append('circle')
+  //       .attr('r', 5)
+  //       .attr('cx', width + margin.left - 200)
+  //       .attr('cy', height)
+  //       .attr('fill', '#E55558')
+
+    // var redText = d3.select('svg')
+    //   .append('text')
+    //     .text('Doping allegations')
+    //     // .attr('x', redCircle.attr('cx') + 10)
+    //     // .attr('y', redCircle.attr('cy'))
+    //     .attr('transform', 'translate(' + (380) + ', ' + redCircle.attr('cy')+ ')')
+
+    // console.log(redCircle.attr('cx'))
 
 })
