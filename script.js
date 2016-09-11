@@ -1,11 +1,9 @@
 d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json", function(data){
 
-  var margin = { top: 30, right: 30, bottom: 40, left:70 }
+  var margin = { top: 30, right: 30, bottom: 70, left:70 }
 
   var height = 400 - margin.top - margin.bottom,
-      width = 600 - margin.left - margin.right,
-      barWidth = 50,
-      barOffset = 5;
+      width = 600 - margin.left - margin.right
 
   var parser = d3.time.format("%M:%S")
 
@@ -85,11 +83,6 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
                 .style('opacity', 1)
         })
 
-  var xLabel = d3.select("svg").append("text")      // text label for the x axis
-          .attr("x", width/2 + margin.right )
-          .attr("y", height  )
-          .style("text-anchor", "middle")
-          .text("Seconds Behind");
 
   var vGuideScale = d3.scale.linear()
           .domain([0, data.length])
@@ -125,6 +118,35 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
           .style({ fill: 'none', stroke: "#000"})
       hGuide.selectAll('line')
           .style({ stroke: "#000"})
+
+
+  var xAxisAttrs = hGuide.node().getBBox()
+  var xAxisWidth = width - margin.left - margin.right
+
+  var xAxisLoc = (d3.transform(hGuide.attr("transform")).translate);
+  var xLabel = d3.select("svg").append("text")      // text label for the x axis
+  // .attr("x", width/2 + margin.left)
+  // .attr("y", height + margin.bottom  )
+    .attr('transform', 'translate(' + (xAxisAttrs.x+(xAxisAttrs.width/2)+margin.left) + ', ' + (xAxisLoc[1] + xAxisAttrs.height + 10 ) + ')')
+    .style("text-anchor", "middle ")
+    .text("Minutes Behind");
+
+  var yAxisAttrs = vGuide.node().getBBox();
+  var yAxisHeight = yAxisAttrs.height
+  var yAxisLoc = (d3.transform(hGuide.attr("transform")).translate);
+
+  console.log(yAxisAttrs)
+
+  var yLabel = d3.select("svg").append("text")
+    // .attrs('transform', 'translate(' + (yAxisAttrs.y+(yAxisAttrs.height/2)+margin.top) + ', ' + (yAxisLoc[0] + yAxisAttrs.width - 20) + ')')
+    // .attr('transform', 'translate(' + 0 +', '+margin.top + yAxisHeight/2 + ')' )
+    // .attr('transform', 'translate(0, ' + (margin.top + yAxisAttrs.height/2) + ')+rotate(-90)')
+    // .attr('transform', yAxisTransform)
+    .attr('transform', 'translate('+ (margin.left - yAxisAttrs.width - 10) + ',' + (margin.top + yAxisAttrs.height/2) + ')rotate(-90)')
+
+    .style("text-anchor", "middle ")
+    .text("Rank")
+
 
   var tooltip = d3.select('body').append('div')
     .classed('tooltip',  true)
