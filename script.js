@@ -20,7 +20,7 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
   }
 
   var points = data.map(function(d, i){
-    //[secondsBehind, place]
+    // merge seconds behind into a new object
     var point = {secBehind: secondsBehind(parser.parse(d.Time))}
     for (var attr in d){ point[attr] = d[attr] }
     return point
@@ -33,7 +33,7 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
 
   var xScale = d3.time.scale()
           // [the most seconds behind, the le]
-          .domain([points[points.length-1].x, 0])
+          .domain([points[points.length-1].secBehind, 0])
           .range([0, width])
           // .domain([d3.min(quarters), d3.max(quarters)])
 
@@ -45,16 +45,51 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
         .attr('transform', 'translate('+ margin.left +', '+ margin.top +')')
         .selectAll('circle').data(points)
         .enter().append('circle')
-            .style('fill', '#619CFF')
-            .attr('cx', function(point, i){
-              console.log(point )
-              return xScale(point.secBehind)
-            })
-            .attr('cy', function(point, i){
-              return yScale(point.Place)
-            })
+          .style('fill', function(point, i){
+            if(point.Doping){
+              return '#E55558'
+            } else {
+              return '#454644'
+            }
+          })
+          .attr('cx', function(point, i){
+            return xScale(point.secBehind)
+          })
+          .attr('cy', function(point, i){
+            return yScale(point.Place)
+          })
 
-            .attr('r', 5)
+          .attr('r', 5)
+
+          // color circle depending if point has doping allegation
+
+          .on('mouseover', function(point) {
+            var ttStr = `<div> \
+              <div>${point.Name}(${point.Nationality})</div> \
+              <div>Year: ${point.Year}, Time: ${point.Time}</div>\
+              <div> ${point.Doping}</div> \
+              <div> <a href='${point.URL}'>source</a></div>\
+            </div>`
+
+            tooltip.style('opacity', .9)
+
+            tooltip.html(ttStr)
+
+            tempColor = this.style.fill;
+            d3.select(this)
+                .style('opacity', .5)
+        })
+
+        .on('mouseout', function(point) {
+            d3.select(this)
+                .style('opacity', 1)
+        })
+
+  var xLabel = d3.select("svg").append("text")      // text label for the x axis
+          .attr("x", width/2 + margin.right )
+          .attr("y", height  )
+          .style("text-anchor", "middle")
+          .text("Seconds Behind");
 
   var vGuideScale = d3.scale.linear()
           .domain([0, data.length])
