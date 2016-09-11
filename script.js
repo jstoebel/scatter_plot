@@ -21,9 +21,9 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
 
   var points = data.map(function(d, i){
     //[secondsBehind, place]
-    var secBehind = secondsBehind(parser.parse(d.Time))
-    var place = d.Place
-    return {x: secBehind, y: place}
+    var point = {secBehind: secondsBehind(parser.parse(d.Time))}
+    for (var attr in d){ point[attr] = d[attr] }
+    return point
   })
 
   //ranking reverse order (1st at top, last on bottom)
@@ -47,11 +47,11 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
         .enter().append('circle')
             .style('fill', '#619CFF')
             .attr('cx', function(point, i){
-              console.log(point.x)
-              return xScale(point.x)
+              console.log(point )
+              return xScale(point.secBehind)
             })
             .attr('cy', function(point, i){
-              return yScale(point.y)
+              return yScale(point.Place)
             })
 
             .attr('r', 5)
