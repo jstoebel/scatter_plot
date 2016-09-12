@@ -59,7 +59,7 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
 
           .attr('r', 5)
 
-          // color circle depending if point has doping allegation
+          // color circle depending if point has doping gation
 
           .on('mouseover', function(point) {
 
@@ -138,38 +138,35 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
   var yAxisHeight = yAxisAttrs.height
   var yAxisLoc = (d3.transform(hGuide.attr("transform")).translate);
 
-  console.log(yAxisAttrs)
-
   var yLabel = d3.select("svg").append("text")
-    // .attrs('transform', 'translate(' + (yAxisAttrs.y+(yAxisAttrs.height/2)+margin.top) + ', ' + (yAxisLoc[0] + yAxisAttrs.width - 20) + ')')
-    // .attr('transform', 'translate(' + 0 +', '+margin.top + yAxisHeight/2 + ')' )
-    // .attr('transform', 'translate(0, ' + (margin.top + yAxisAttrs.height/2) + ')+rotate(-90)')
-    // .attr('transform', yAxisTransform)
     .attr('transform', 'translate('+ (margin.left - yAxisAttrs.width - 10) + ',' + (margin.top + yAxisAttrs.height/2) + ')rotate(-90)')
-
     .style("text-anchor", "middle ")
     .text("Rank")
-
 
   var tooltip = d3.select('body').append('div')
     .classed('tooltip',  true)
 
   console.log(d3.legend !== undefined)
 
-  // var redCircle = d3.select('svg')
-  //     .append('circle')
-  //       .attr('r', 5)
-  //       .attr('cx', width + margin.left - 200)
-  //       .attr('cy', height)
-  //       .attr('fill', '#E55558')
+  var dotScale = d3.scale.ordinal()
+    .domain(["Doping allegation", "No allegation"])
+    .range(["#E55558", "#454644"])
 
-    // var redText = d3.select('svg')
-    //   .append('text')
-    //     .text('Doping allegations')
-    //     // .attr('x', redCircle.attr('cx') + 10)
-    //     // .attr('y', redCircle.attr('cy'))
-    //     .attr('transform', 'translate(' + (380) + ', ' + redCircle.attr('cy')+ ')')
+  var svg = d3.select('svg')
 
-    // console.log(redCircle.attr('cx'))
+  svg.append('g')
+    .attr("class", "legendOrdinal")
+    .attr("transform", "translate(20,20)");
 
+  var legendOrdinal = d3.legend.color()
+  //d3 symbol creates a path-string, for example
+  //"M0,-8.059274488676564L9.306048591020996,
+  //8.059274488676564 -9.306048591020996,8.059274488676564Z"
+  .shape("path", d3.svg.symbol().type("circle").size(75)())
+    .shapePadding(10)
+    .scale(dotScale);
+
+  svg.select(".legendOrdinal")
+    .call(legendOrdinal)
+    .attr('transform', 'translate(' + (width * .8) + ', ' + (height * .9) + ')')
 })
